@@ -115,7 +115,7 @@ var coordinates
 												 //  console.log(JSON.stringify(polygonCluster))
 												 var distPointset = hull(polygonCluster, /*0.000034 NEEDS TO BE FIXED TO PERFECT THE POLYGON-REVIEW LATER*/4.5/*,['.lat', '.lng']*/);
 												 //console.log(JSON.stringify(distPointset)    )
-												 	console.log( turf.concave(polygonCluster,1,'radians'));
+												 //	console.log( turf.concave(polygonCluster,1,'radians'));
 												 console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
 												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, allowIntersection = false)
 												 //var polygon = new google.maps.Polygon({paths:/*layerJson[j].coord*/arrayMercatorToLatLon(distPointset),strokeColor: layerJson[j].color/*"#7FFF00"*/,fillColor: layerJson[j].color /*'#7FFF00'*//*, editable:true, draggable:true*/,strokeOpacity: 1.0,strokeWeight: 1 })
