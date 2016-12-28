@@ -1,13 +1,155 @@
 {% extends "app/logged_in_base.html" %}
+<head>
 {% load i18n %}
+{% load i18n static %}
+<!--<script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+<script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+ <script src="app/js/components/Map.jsx" type="text/jsx"></script>
+  <script src="app/js/components/PolygonCreator.js"></script>
+  <script type="text/javascript" src="app/js/components/PolygonCreator.js"></script>
+  <script src="{% static 'app/js/components/PolygonCreator.js' %}"></script>
+<script src="{% static 'app/js/components/Map.jsx' %}"></script>
+<script src="{% static 'app/js/components/ProjectListItem.jsx' %}"></script>
+ <script src="app/js/components/ProjectListItem.jsx" type="text/jsx"></script>
+   <link href="{% static 'app/css/custom.css' %}" rel="stylesheet">-->
+	 <script>
 
+	 </script>
+</head>
 {% block content %}
+
 	<h3>{{title}}</h3>
-	
-	<div data-mapview 
+
+	<div data-mapview
 		{% for key, value in params %}
 			data-{{key}}="{{value}}"
 		{% endfor %}
 	></div>
+<!--Ver amanhã script para chamar função de desenhar!! -->
+<!--"btn btn-primary"
+<script src=" "app/js/components/Map.jsx" %}"></script>-->
+
+<div class=btn-group pull-left>
+<script type="text/javascript" src="{% static 'app/js/components/xmlJson.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/PolygonCreator.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/library/bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/library/bundle2.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/library/turf.min.js' %}"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<button id="button" class="btn btn-primary btn-sm dz-clickable" ><i class="glyphicon glyphicon-upload"></i> Create Layers</button>
+<!--<input type="file" id="fileinput" />-->
+<!--accept=".xml,.XML"-->
+<input type="file"  id="fileLoader" name="files" title="Load File" style="visibility: hidden;" />
+<p id="demo"></p>
+</div>
+<script type="text/javascript">
+//var  parsed
+var coordinates
+       $("#button").click( function()
+           {
+              $("#fileLoader").click();
+ 						 document.getElementById('fileLoader').addEventListener('change', function(){
+
+							    //for(var i = 0; i<this.files.length; i++){
+												var file =  this.files[0];
+								/*			  var file =  this.files[0];
+											  var reader = new FileReader();
+												reader.readAsText(file);
+											  reader.onload = function() {
+											  var parsed = new DOMParser().parseFromString(this.result, "text/xml");
+											     //console.log(parsed);
+
+												coordinates= xmlToJson(parsed)
+												console.log(JSON.stringify(coordinates));
+											};*/
+											//TEST TO CHANGE OBJ PULL FORMAT
+											var objectURL = window.URL.createObjectURL(file);
+											var xhr = new XMLHttpRequest;
+							 xhr.open("GET", objectURL);
+							 //console.log(a.stringify())
+							 xhr.onreadystatechange = function() {
+							 if (xhr.readyState == XMLHttpRequest.DONE) {
+							 coordinates = xmlToJson(xhr.responseXML.documentElement);
+									 //
+
+									 console.log(coordinates)
+									 var layerJson=loadAllElementsCoordinates(coordinates);
+//
+										//console.log(finalCoordinates);
+										/**
+										 * [i CYCLE USED TO CREATE CLUSTER OF POLYGONS]
+										 * @type {Number}
+										 */
+										for(var j=0; j<layerJson.length;j++){
+											//createPolygon(finalCoordinates[i].coord,finalCoordinates[i].color)
+											/**
+											 * TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST BEGIN
+											 */
+											 var arrayXYForCluster=[]
+
+
+											 arrayXYForCluster =transformToXY(layerJson[j].coord);
+											 //console.log(JSON.stringify(arrayXYForCluster))
+											 var clusters =densityClustering(arrayXYForCluster);
+											 //console.log(JSON.stringify(clusters))
+											 console.log(clusters.length)
+											 for(var b=0; b<clusters.length; b++)
+											 { //Needs to run trought cluster and use index to fill polygonCluster with layerJson[j].coord index
+												 var polygonCluster=[]
+												 //console.log(clusters[b].length)
+												 for(var p=0; p<clusters[b].length;p++)
+												 {
+													 //----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
+													 //polygonCluster.push(layerJson[j].coord[clusters[b][p])
+													 //----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
+
+
+													 //----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-BEGIN
+													 polygonCluster.push(latLonToMercator(layerJson[j].coord[clusters[b][p]].lat,layerJson[j].coord[clusters[b][p]].lng))
+													 //----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-END
+												 }
+												 //  console.log(JSON.stringify(polygonCluster))
+												 var distPointset = hull(polygonCluster, /*0.000034 NEEDS TO BE FIXED TO PERFECT THE POLYGON-REVIEW LATER*/4.5/*,['.lat', '.lng']*/);
+												 //console.log(JSON.stringify(distPointset)    )
+												 	console.log( turf.concave(polygonCluster,1,'radians'));
+												 console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
+												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, allowIntersection = false)
+												 //var polygon = new google.maps.Polygon({paths:/*layerJson[j].coord*/arrayMercatorToLatLon(distPointset),strokeColor: layerJson[j].color/*"#7FFF00"*/,fillColor: layerJson[j].color /*'#7FFF00'*//*, editable:true, draggable:true*/,strokeOpacity: 1.0,strokeWeight: 1 })
+												 //polygon.setMap(map);
+
+											 }
+
+
+											 /**
+ 											 * TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST END
+ 											 */
+
+										}
+							 }
+							 }
+							 xhr.send();
+
+											//TEST TO CHANGE OBJ PULL FORMAT
+
+
+
+							   //}
+
+		    //  console.log(JSON.stringify(xmlText));
+      //  var jsonXml=xml2json(reader);
+      //  console.log(JSon.stringify(jsonXml));
+
+								}, false);
+
+
+             //createPolygon();//tem que ser no onload
+           }
+        );
+
+    </script>
 
 {% endblock %}

@@ -12,6 +12,10 @@ import '../vendor/leaflet/Leaflet.Autolayers/leaflet-autolayers';
 import $ from 'jquery';
 import ErrorMessage from './ErrorMessage';
 import AssetDownloads from '../classes/AssetDownloads';
+import ProjectListItem from './ProjectListItem.jsx'
+
+console.log("Map.jsx");
+
 
 class Map extends React.Component {
   static defaultProps = {
@@ -31,7 +35,7 @@ class Map extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       error: ""
     };
@@ -50,13 +54,35 @@ class Map extends React.Component {
       measureControl: true,
       positionControl: true
     });
+ window.map=this.map;
+    //trying to change map in order to react to my api key-TEST-BEGIN
+
+
+    //TEST-end
+
 
     if (showBackground) {
+    //TEST
+  /*  var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCQxCYUcPRCoZzezua8z0tKdqkk4VkS7cE';
+  //  script.addTo(this.map);*/
+    //TEST
       this.basemaps = {
-        "Google Maps Hybrid": L.tileLayer('//{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+      /*"Google Maps Hybrid":
+         L.tileLayer('https://maps.googleapis.com/maps/api/js?key=AIzaSyCQxCYUcPRCoZzezua8z0tKdqkk4VkS7cE', {
+            key: 'AIzaSyCQxCYUcPRCoZzezua8z0tKdqkk4VkS7cE',
             attribution: 'Map data: &copy; Google Maps',
             subdomains: ['mt0','mt1','mt2','mt3'],
-            maxZoom: 22,
+            maxZoom: 24,
+            minZoom: 0,
+            label: 'Google Maps Hybrid'
+        }).addTo(this.map),*/
+        "Google Maps Hybrid":
+         L.tileLayer('//{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            attribution: 'Map data: &copy; Google Maps',
+            subdomains: ['mt0','mt1','mt2','mt3'],
+            maxZoom: 24,
             minZoom: 0,
             label: 'Google Maps Hybrid'
         }).addTo(this.map),
@@ -74,6 +100,18 @@ class Map extends React.Component {
         })
       };
     }
+
+//--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST BEGIN-SUCCESS
+window.createPolygon = function(polygonPoints,color)  {
+
+
+    //var polygonPoints=[{"lat":38.61263931011046,"lng":-9.156878923780182},{"lat":38.61265402307808,"lng":-9.156913413114912},{"lat":38.61265402307808,"lng":-9.156924909559818},{"lat":38.61263931011046,"lng":-9.156890420225087},{"lat":38.61263931011046,"lng":-9.156878923780182}];
+
+    var polygon= L.polygon(polygonPoints, {color: color});
+  //  console.log("ta a funcionar!");
+    polygon.addTo(window.map);
+}
+//--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST END-SUCCESS
 
     this.map.fitWorld();
 
@@ -147,7 +185,7 @@ class Map extends React.Component {
         }).addTo(this.map);
 
         this.map.on('click', e => {
-          // Find first tile layer at the selected coordinates 
+          // Find first tile layer at the selected coordinates
           for (let layer of this.imageryLayers){
             if (layer._map && layer.options.bounds.contains(e.latlng)){
               layer.openPopup();
@@ -178,7 +216,7 @@ class Map extends React.Component {
     return (
       <div style={{height: "100%"}} className="map">
         <ErrorMessage bind={[this, 'error']} />
-        <div 
+        <div
           style={{height: "100%"}}
           ref={(domNode) => (this.container = domNode)}
         />

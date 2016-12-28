@@ -178,7 +178,7 @@ L.Control.AutoLayers = L.Control.extend({
 
 		container.appendChild(form);
 
-		//check to see if we have any preadded 
+		//check to see if we have any preadded
 
 		return true;
 	},
@@ -394,7 +394,7 @@ L.Control.AutoLayers = L.Control.extend({
 		var self = this;
 		var layers = [];
 		this.layersToAdd[mapServer.name] = [];
-		var url = mapServer.dictionary.replace(/&amp;/g, '&');
+		var url =mapServer.dictionary.replace(/&amp;/g, '&');
 		ajax(url, function(res) {
 
 			if (mapServer.type === 'esri') {
