@@ -13,7 +13,8 @@ import $ from 'jquery';
 import ErrorMessage from './ErrorMessage';
 import AssetDownloads from '../classes/AssetDownloads';
 import ProjectListItem from './ProjectListItem.jsx'
-
+import Leaflet2 from './library/Leaflet.Editable'
+import './library/Path.Drag'
 console.log("Map.jsx");
 
 
@@ -49,10 +50,11 @@ class Map extends React.Component {
     const { showBackground, tiles } = this.props;
     const assets = AssetDownloads.excludeSeparators();
 
-    this.map = Leaflet.map(this.container, {
+    this.map = L.map(this.container, {
       scrollWheelZoom: true,
       measureControl: true,
-      positionControl: true
+      positionControl: true,
+      editable: true//added to try to make map editable
     });
  window.map=this.map;
     //trying to change map in order to react to my api key-TEST-BEGIN
@@ -101,16 +103,26 @@ class Map extends React.Component {
       };
     }
 
+
 //--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST BEGIN-SUCCESS
-window.createPolygon = function(polygonPoints,color)  {
+window.createPolygon = function(polygonPoints,color,name)  {
 
 
     //var polygonPoints=[{"lat":38.61263931011046,"lng":-9.156878923780182},{"lat":38.61265402307808,"lng":-9.156913413114912},{"lat":38.61265402307808,"lng":-9.156924909559818},{"lat":38.61263931011046,"lng":-9.156890420225087},{"lat":38.61263931011046,"lng":-9.156878923780182}];
 
-    var polygon= L.polygon(polygonPoints, {color: color});
+    var polygon= L.polygon(polygonPoints, {color: color} );
   //  console.log("ta a funcionar!");
     polygon.addTo(window.map);
-}
+
+    /**
+     * CODE TO MAKE POLYGON HANDLE EVENTS--BRUNO USE LATER TO ADMIN CHANGES
+     */
+    polygon.on('click',function(e) {
+
+      polygon.enableEdit();
+      polygon.dragging.enable()
+    alert(name); });
+    }
 //--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST END-SUCCESS
 
     this.map.fitWorld();

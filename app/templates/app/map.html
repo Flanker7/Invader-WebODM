@@ -39,15 +39,16 @@
 <script type="text/javascript" src="{% static 'app/js/components/library/turf.min.js' %}"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+<p id="demo"></p>
 <button id="button" class="btn btn-primary btn-sm dz-clickable" ><i class="glyphicon glyphicon-upload"></i> Create Layers</button>
 <!--<input type="file" id="fileinput" />-->
 <!--accept=".xml,.XML"-->
 <input type="file"  id="fileLoader" name="files" title="Load File" style="visibility: hidden;" />
-<p id="demo"></p>
+
 </div>
 <script type="text/javascript">
 //var  parsed
+polygonArray=[];
 var coordinates
        $("#button").click( function()
            {
@@ -83,7 +84,7 @@ var coordinates
 										/**
 										 * [i CYCLE USED TO CREATE CLUSTER OF POLYGONS]
 										 * @type {Number}
-										 */
+										 */var n=0
 										for(var j=0; j<layerJson.length;j++){
 											//createPolygon(finalCoordinates[i].coord,finalCoordinates[i].color)
 											/**
@@ -99,6 +100,7 @@ var coordinates
 											 console.log(clusters.length)
 											 for(var b=0; b<clusters.length; b++)
 											 { //Needs to run trought cluster and use index to fill polygonCluster with layerJson[j].coord index
+												 n++;
 												 var polygonCluster=[]
 												 //console.log(clusters[b].length)
 												 for(var p=0; p<clusters[b].length;p++)
@@ -117,7 +119,7 @@ var coordinates
 												 //console.log(JSON.stringify(distPointset)    )
 												 //	console.log( turf.concave(polygonCluster,1,'radians'));
 												 console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
-												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, allowIntersection = false)
+												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, 'polygon'+n)
 												 //var polygon = new google.maps.Polygon({paths:/*layerJson[j].coord*/arrayMercatorToLatLon(distPointset),strokeColor: layerJson[j].color/*"#7FFF00"*/,fillColor: layerJson[j].color /*'#7FFF00'*//*, editable:true, draggable:true*/,strokeOpacity: 1.0,strokeWeight: 1 })
 												 //polygon.setMap(map);
 
