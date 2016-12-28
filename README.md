@@ -1,4 +1,7 @@
-# WebODM
+
+#Invader Web
+
+<!---# WebODM
 
 [![Build Status](https://travis-ci.org/OpenDroneMap/WebODM.svg?branch=master)](https://travis-ci.org/OpenDroneMap/WebODM)
 
@@ -106,7 +109,7 @@ You may also need to set the environment variable PROJSO to the .so or .dll proj
 - [X] User Registration / Authentication
 - [X] UI mockup
 - [X] Task Processing
-- [X] 2D Map Display 
+- [X] 2D Map Display
 - [ ] 3D model display
 - [X] Cluster management and setup.
 - [ ] Mission Planner
@@ -124,7 +127,7 @@ You may also need to set the environment variable PROJSO to the .so or .dll proj
  - `ProcessingNode`: An instance usually running on a separate VM, or on a separate machine which accepts aerial images, runs OpenDroneMap and returns the processed results (orthophoto, georeferenced model, etc.). Each node communicates with WebODM via a lightweight API such as [node-OpenDroneMap](https://www.github.com/pierotofy/node-OpenDroneMap). WebODM manages the distribution of `Task` to different `ProcessingNode` instances.
  - `ImageUpload`: aerial images.
  - `Mission`: A flight path and other information (overlap %, angle, ...) associated with a particular `Task`.
- 
+
 ![image](https://cloud.githubusercontent.com/assets/1951843/17680196/9bfe878e-6304-11e6-852e-c09f1e02f3c0.png)
 
-![er diagram - webodm 2](https://cloud.githubusercontent.com/assets/1951843/17717379/4a227e28-63d3-11e6-9518-6a63cc1bcd3b.png)
+![er diagram - webodm 2](https://cloud.githubusercontent.com/assets/1951843/17717379/4a227e28-63d3-11e6-9518-6a63cc1bcd3b.png)-->
