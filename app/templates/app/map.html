@@ -37,6 +37,9 @@
 <script type="text/javascript" src="{% static 'app/js/components/library/bundle.js' %}"></script>
 <script type="text/javascript" src="{% static 'app/js/components/library/bundle2.js' %}"></script>
 <script type="text/javascript" src="{% static 'app/js/components/library/turf.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/library/Path.Drag.js' %}"></script>
+<script type="text/javascript" src="{% static 'app/js/components/library/Leaflet.Editable.js' %}"></script>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <p id="demo"></p>
@@ -120,8 +123,7 @@ var coordinates
 												 //	console.log( turf.concave(polygonCluster,1,'radians'));
 												 console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
 												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, 'polygon'+n)
-												 //var polygon = new google.maps.Polygon({paths:/*layerJson[j].coord*/arrayMercatorToLatLon(distPointset),strokeColor: layerJson[j].color/*"#7FFF00"*/,fillColor: layerJson[j].color /*'#7FFF00'*//*, editable:true, draggable:true*/,strokeOpacity: 1.0,strokeWeight: 1 })
-												 //polygon.setMap(map);
+
 
 											 }
 
@@ -131,12 +133,39 @@ var coordinates
  											 */
 
 										}
+
+						/**
+						 * CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
+						 */
+										console.log(polygonArray);
+										for(var p=0; p<polygonArray.length;p++){
+											console.log( polygonArray[p].polyg);
+												polygonArray[p].polyg.on('click',function(e) {
+													//CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
+													for(a=0; a<polygonArray.length;a++)
+													{	if(p!=a)
+														{
+															polygonArray[a].polyg.disableEdit();
+															polygonArray[a].polyg.dragging.disable()
+														}
+													}
+													//CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
+													 //console.log(e);
+												e.target.enableEdit();
+												e.target.dragging.enable();
+											 });
+											}
+						/**
+						 * CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
+						 */
 							 }
+
+
+
 							 }
 							 xhr.send();
 
 											//TEST TO CHANGE OBJ PULL FORMAT
-
 
 
 							   //}
@@ -146,6 +175,7 @@ var coordinates
       //  console.log(JSon.stringify(jsonXml));
 
 								}, false);
+
 
 
              //createPolygon();//tem que ser no onload

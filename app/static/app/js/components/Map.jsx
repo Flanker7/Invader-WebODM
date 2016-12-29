@@ -103,7 +103,7 @@ class Map extends React.Component {
       };
     }
 
-
+window.polygonArray=[]
 //--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST BEGIN-SUCCESS
 window.createPolygon = function(polygonPoints,color,name)  {
 
@@ -111,18 +111,45 @@ window.createPolygon = function(polygonPoints,color,name)  {
     //var polygonPoints=[{"lat":38.61263931011046,"lng":-9.156878923780182},{"lat":38.61265402307808,"lng":-9.156913413114912},{"lat":38.61265402307808,"lng":-9.156924909559818},{"lat":38.61263931011046,"lng":-9.156890420225087},{"lat":38.61263931011046,"lng":-9.156878923780182}];
 
     var polygon= L.polygon(polygonPoints, {color: color} );
+    polygonArray.push({name:name,polyg:polygon});
   //  console.log("ta a funcionar!");
+  //
     polygon.addTo(window.map);
 
     /**
      * CODE TO MAKE POLYGON HANDLE EVENTS--BRUNO USE LATER TO ADMIN CHANGES
      */
-    polygon.on('click',function(e) {
+    // polygon.on('click',function(e) {
+    //
+    //   polygon.enableEdit();
+    //   polygon.dragging.enable()
+    // alert(name); });
 
-      polygon.enableEdit();
-      polygon.dragging.enable()
-    alert(name); });
     }
+//DEFINED IN HTML BETTER FOR TESTING
+// window.createPolygonHandler = function()  {
+//
+//   console.log(polygonArray);
+//   for(var p=0; p<polygonArray.length;p++){
+//     console.log( polygonArray[p].polyg);
+//       polygonArray[p].polyg.on('click',function(e) {
+//         // for(a=0; a<polygonArray.length;a++)
+//         // {	if(p!=a)
+//         // 	{
+//         // 		polygonArray[a][1].disableEdit();
+//         // 		polygonArray[a][1].dragging.disable()
+//         // 	}
+//         // }
+//          console.log( polygonArray[p].polyg);
+//       polygonArray[p].polyg.enableEdit();
+//       polygonArray[p].polyg.dragging.enable();
+//     alert(polygonArray[p].name); });
+//     }
+//
+// }
+
+
+
 //--METHOD TO DRAW POLYGON--LAST STEP TO COMPLETE POLYGON CREATION-BRUNO TEST END-SUCCESS
 
     this.map.fitWorld();
