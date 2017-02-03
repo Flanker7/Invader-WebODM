@@ -110,12 +110,32 @@ window.createPolygon = function(polygonPoints,color,name)  {
 
     //var polygonPoints=[{"lat":38.61263931011046,"lng":-9.156878923780182},{"lat":38.61265402307808,"lng":-9.156913413114912},{"lat":38.61265402307808,"lng":-9.156924909559818},{"lat":38.61263931011046,"lng":-9.156890420225087},{"lat":38.61263931011046,"lng":-9.156878923780182}];
 
-    var polygon= L.polygon(polygonPoints, {color: color} );
+    var polygon= L.polygon(polygonPoints, {color: color} ,{ allowIntersection: false });
     polygonArray.push({name:name,polyg:polygon});
   //  console.log("ta a funcionar!");
   //
     polygon.addTo(window.map);
+}
+//ENDED HERE TO TRY TO CLEAR MAP AND DRAW POLYGONS AGAIN- BRUNO
+window.clearMap= function () {
+  console.log(map);
+  for(var i=0; i<polygonArray.length; i++){
+    window.map.removeLayer(polygonArray[i].polyg)
+  }
 
+  // console.log(window.map.events.length);
+  //       for(var i=0; i<window.map._layers.length;i++) {
+  //           if(map._layers[i].options.format == undefined) {
+  //               try {
+  //                   map.removeLayer(map._layers[i]);
+  //               }
+  //               catch(e) {
+  //                   console.log("problem with " + e + map._layers[i]);
+  //               }
+  //           }
+  //       }
+    }
+//ENDED HERE TO TRY TO CLEAR MAP AND DRAW POLYGONS AGAIN- BRUNO
     /**
      * CODE TO MAKE POLYGON HANDLE EVENTS--BRUNO USE LATER TO ADMIN CHANGES
      */
@@ -125,7 +145,7 @@ window.createPolygon = function(polygonPoints,color,name)  {
     //   polygon.dragging.enable()
     // alert(name); });
 
-    }
+
 //DEFINED IN HTML BETTER FOR TESTING
 // window.createPolygonHandler = function()  {
 //

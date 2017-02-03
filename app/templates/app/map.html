@@ -39,148 +39,248 @@
 <script type="text/javascript" src="{% static 'app/js/components/library/turf.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'app/js/components/library/Path.Drag.js' %}"></script>
 <script type="text/javascript" src="{% static 'app/js/components/library/Leaflet.Editable.js' %}"></script>
-
-
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "app/js/css/SwitchButton.css" %}{% endblock %}" />
+<!--<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css">
+<link rel="stylesheet" type="text/css" href="/static/app/css/bootstrap.min.css">
+<link href="/static/app/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/app/css/metisMenu.min.css" rel="stylesheet">
+<link href="/static/app/css/sb-admin-2.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/static/app/bundles/css/main.css">
+<script src="/static/app/js/vendor/modernizr-2.8.3.min.js"></script>
+<script src="/static/app/js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/static/app/bundles/main-0a48b0504b3e20f06511.js"></script>
+<link type="text/css" href="/static/app/bundles/css/main.css" rel="stylesheet">-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <p id="demo"></p>
+<input type="file"  id="fileLoader" name="files" title="Load File" style="visibility: hidden;"  />
 <button id="button" class="btn btn-primary btn-sm dz-clickable" ><i class="glyphicon glyphicon-upload"></i> Create Layers</button>
 <!--<input type="file" id="fileinput" />-->
 <!--accept=".xml,.XML"-->
-<input type="file"  id="fileLoader" name="files" title="Load File" style="visibility: hidden;" />
+<!--<div>
 
+
+<label class="switch">Editable
+  <input type="checkbox">
+  <div class="slider round"></div>
+Draggable</label>
+
+</div>-->
+
+<!--style="visibility: hidden;"-->
+
+<div  style="margin: 0 auto; width: auto; text-align: center;">
+<label id="switch" class="switch" style="visibility: hidden;" >
+  <input type="checkbox"  >
+  <div class="slider "></div>
+</label>
 </div>
+</div>
+<p class="bottom-three">
+</p>
+<table id='table' class='table' style="width:100%">
+  <tr>
+    <th>Color</th>
+    <th>Target</th>
+    <th>Polygon Number</th>
+  </tr>
+	<tr>
+    <td><div style="width:50px;height:50px;border-radius: 5px;border:1px solid #000;background:#ff0000";></div></td>
+    <td>Smith</td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td>
+    <td>94</td>
+  </tr>
+</table>
 <script type="text/javascript">
 //var  parsed
-polygonArray=[];
-var coordinates
+var bool;
+	var coordinates
+//polygonArray=[];
+//this.files=[];
+var clicked;
        $("#button").click( function()
            {
               $("#fileLoader").click();
- 						 document.getElementById('fileLoader').addEventListener('change', function(){
 
-							    //for(var i = 0; i<this.files.length; i++){
-												var file =  this.files[0];
-								/*			  var file =  this.files[0];
-											  var reader = new FileReader();
-												reader.readAsText(file);
-											  reader.onload = function() {
-											  var parsed = new DOMParser().parseFromString(this.result, "text/xml");
-											     //console.log(parsed);
-
-												coordinates= xmlToJson(parsed)
-												console.log(JSON.stringify(coordinates));
-											};*/
-											//TEST TO CHANGE OBJ PULL FORMAT
-											var objectURL = window.URL.createObjectURL(file);
-											var xhr = new XMLHttpRequest;
-							 xhr.open("GET", objectURL);
-							 //console.log(a.stringify())
-							 xhr.onreadystatechange = function() {
-							 if (xhr.readyState == XMLHttpRequest.DONE) {
-							 coordinates = xmlToJson(xhr.responseXML.documentElement);
-									 //
-
-									 console.log(coordinates)
-									 var layerJson=loadAllElementsCoordinates(coordinates);
-//
-										//console.log(finalCoordinates);
-										/**
-										 * [i CYCLE USED TO CREATE CLUSTER OF POLYGONS]
-										 * @type {Number}
-										 */var n=0
-										for(var j=0; j<layerJson.length;j++){
-											//createPolygon(finalCoordinates[i].coord,finalCoordinates[i].color)
-											/**
-											 * TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST BEGIN
-											 */
-											 var arrayXYForCluster=[]
-
-
-											 arrayXYForCluster =transformToXY(layerJson[j].coord);
-											 //console.log(JSON.stringify(arrayXYForCluster))
-											 var clusters =densityClustering(arrayXYForCluster);
-											 //console.log(JSON.stringify(clusters))
-											 console.log(clusters.length)
-											 for(var b=0; b<clusters.length; b++)
-											 { //Needs to run trought cluster and use index to fill polygonCluster with layerJson[j].coord index
-												 n++;
-												 var polygonCluster=[]
-												 //console.log(clusters[b].length)
-												 for(var p=0; p<clusters[b].length;p++)
-												 {
-													 //----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
-													 //polygonCluster.push(layerJson[j].coord[clusters[b][p])
-													 //----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
-
-
-													 //----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-BEGIN
-													 polygonCluster.push(latLonToMercator(layerJson[j].coord[clusters[b][p]].lat,layerJson[j].coord[clusters[b][p]].lng))
-													 //----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-END
-												 }
-												 //  console.log(JSON.stringify(polygonCluster))
-												 var distPointset = hull(polygonCluster, /*0.000034 NEEDS TO BE FIXED TO PERFECT THE POLYGON-REVIEW LATER*/4.5/*,['.lat', '.lng']*/);
-												 //console.log(JSON.stringify(distPointset)    )
-												 //	console.log( turf.concave(polygonCluster,1,'radians'));
-												 console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
-												 createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, 'polygon'+n)
-
-
-											 }
-
-
-											 /**
- 											 * TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST END
- 											 */
-
-										}
-
-						/**
-						 * CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
-						 */
-										console.log(polygonArray);
-										for(var p=0; p<polygonArray.length;p++){
-											console.log( polygonArray[p].polyg);
-												polygonArray[p].polyg.on('click',function(e) {
-													//CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
-													for(a=0; a<polygonArray.length;a++)
-													{	if(p!=a)
-														{
-															polygonArray[a].polyg.disableEdit();
-															polygonArray[a].polyg.dragging.disable()
-														}
-													}
-													//CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
-													 //console.log(e);
-												e.target.enableEdit();
-												e.target.dragging.enable();
-											 });
-											}
-						/**
-						 * CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
-						 */
-							 }
-
-
-
-							 }
-							 xhr.send();
-
-											//TEST TO CHANGE OBJ PULL FORMAT
-
-
-							   //}
-
-		    //  console.log(JSON.stringify(xmlText));
-      //  var jsonXml=xml2json(reader);
-      //  console.log(JSon.stringify(jsonXml));
-
-								}, false);
-
-
-
-             //createPolygon();//tem que ser no onload
            }
         );
+				//
+				document.getElementById('fileLoader').addEventListener('change', function(){
+
+					 if (this.files[0] != null){
+
+
+							 //for(var i = 0; i<this.files.length; i++){
+										 var file =  this.files[0];
+						 /*			  var file =  this.files[0];
+										 var reader = new FileReader();
+										 reader.readAsText(file);
+										 reader.onload = function() {
+										 var parsed = new DOMParser().parseFromString(this.result, "text/xml");
+												//console.log(parsed);
+
+										 coordinates= xmlToJson(parsed)
+										 console.log(JSON.stringify(coordinates));
+									 };*/
+									 //TEST TO CHANGE OBJ PULL FORMAT
+									 var objectURL = window.URL.createObjectURL(file);
+									 var xhr = new XMLHttpRequest;
+						xhr.open("GET", objectURL);
+						//console.log(a.stringify())
+						xhr.onreadystatechange = function() {
+						if (xhr.readyState == XMLHttpRequest.DONE) {
+				 coordinates = xmlToJson(xhr.responseXML.documentElement);
+								//
+
+								console.log(coordinates)
+								//COMMENTED TO TEST NEW FUNCTION BRUNO PATO NOW
+								var layerJson=loadAllElementsCoordinates(coordinates);
+//
+								 //console.log(finalCoordinates);
+								 /**
+									* [i CYCLE USED TO CREATE CLUSTER OF POLYGONS]
+									* @type {Number}
+									*/var n=0
+								 for(var j=0; j<layerJson.length;j++){
+									 //createPolygon(finalCoordinates[i].coord,finalCoordinates[i].color)
+									 /**
+										* TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST BEGIN
+										*/
+										var arrayXYForCluster=[]
+
+
+										arrayXYForCluster =transformToXY(layerJson[j].coord);
+										//console.log(JSON.stringify(arrayXYForCluster))
+										var clusters =densityClustering(arrayXYForCluster);
+										//console.log(JSON.stringify(clusters))
+										console.log(clusters.length)
+										for(var b=0; b<clusters.length; b++)
+										{ //Needs to run trought cluster and use index to fill polygonCluster with layerJson[j].coord index
+											n++;
+											var polygonCluster=[]
+											//console.log(clusters[b].length)
+											for(var p=0; p<clusters[b].length;p++)
+											{
+												//----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
+												//polygonCluster.push(layerJson[j].coord[clusters[b][p])
+												//----NOT USING latLonToMercator()  APPLYING HULL CONCAVE DIRECTLY ON GPS COORDINATES---TEST-TEMP SUSPENDED METHOD
+
+
+												//----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-BEGIN
+												polygonCluster.push(latLonToMercator(layerJson[j].coord[clusters[b][p]].lat,layerJson[j].coord[clusters[b][p]].lng))
+												//----USING latLonToMercator() TO APPLY HULL CONCAVE WITH CARTESIAN COORDINATES INSTEAD OF GPS COORDINATES---TEST-END
+											}
+											//  console.log(JSON.stringify(polygonCluster))
+										 var distPointset = hull(polygonCluster, /*0.000034 NEEDS TO BE FIXED TO PERFECT THE POLYGON-REVIEW LATER*/4.5/*,['.lat', '.lng']*/);
+											//console.log(JSON.stringify(distPointset)    )
+											//	console.log( turf.concave(polygonCluster,1,'radians'));
+											console.log(JSON.stringify(arrayMercatorToLatLon(distPointset)))
+											createPolygon(arrayMercatorToLatLon(distPointset),layerJson[j].color, 'polygon'+n)
+
+										}
+										 }
+
+
+										/**
+										* TEST TO CREATE POLYGON WITH CONCAVE FORMAT AND OPTICS CLUSTERING ALGORITHM-TEST END
+										*/
+
+
+
+				 /**
+					* CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
+					*/
+								 //console.log(polygonArray);
+								 for(var p=0; p<polygonArray.length;p++){
+								 //	console.log( polygonArray[p].polyg);
+										 polygonArray[p].polyg.on('click',function(e,p) {
+											 //CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
+											 for(a=0; a<polygonArray.length;a++)
+											 {	if(p!=a)
+												 {
+														polygonArray[a].polyg.disableEdit();
+														polygonArray[a].polyg.dragging.disable()
+												 }
+											 }
+											 //CODE RESPONSABLE BY REMOVING POLYGON SELECTION WHEN ANOTHER IS CLICKED
+												//console.log(e);
+												document.getElementById("switch").style.visibility = "visible";
+												clicked=e;
+												console.log(e.target);
+										 // 	 if(document.getElementById("switch").checked){
+										 // 		 alert("cenas");
+										 //
+
+
+											 //  e.target.enableEdit();
+											 //   e.target.dragging.disable();
+										 // 	 e.target.dragging.disable();
+										 //  }else if (!document.getElementById("switch").checked){
+										 // 	 alert("coisas");
+										 // 		e.target.dragging.enable();
+										 // 		e.target.disableEdit();
+											 // }
+										 e.target.enableEdit();
+										 e.target.dragging.enable();
+										});
+									 }
+
+				 /**
+					* CODE RESPONSABLE BY HANDLING THE POLYGON CLICK EVENTS--BRUNO
+					*/
+
+ // 				 $('#switch :checkbox').change(function() {
+ //  // this will contain a reference to the checkbox
+ //  if (this.checked) {
+ // 	 bool=true;
+ // 	 clicked.target.enableEdit();
+ // 	 clicked.target.dragging.disable();
+ // 	 alert("checked")
+	//
+ //      // the checkbox is now checked
+ //  } else if(!this.checked) {
+ // 	 bool=false;
+ // 	 clicked.target.dragging.enable();
+ // 	 clicked.target.disableEdit();
+ // 	 alert("unckecked")
+ //     //  the checkbox is now no longer checked
+ //  }
+//});
+						}
+
+
+
+						}
+						xhr.send();
+
+					}
+					//TEST TO CHANGE OBJ PULL FORMAT
+
+				},false);
+				$("#table tr").click(function(){
+				   $(this).addClass('selected').siblings().removeClass('selected');
+				   var value=$(this).find('td:first').html();
+				   alert(value);
+				});
+
+				$('.ok').on('click', function(e){
+				    alert($("#table tr.selected td:first").html());
+				});
+
+				$('#switch :checkbox').change(function() {
+						clearMap();
+						//coordinates=null;
+
+				});
 
     </script>
 
